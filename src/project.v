@@ -53,7 +53,10 @@ module tt_um_example (
       B <= 0;
     end else begin
       if (video_active) begin
-        {R, G, B} <= inp_b;
+        if (pos_x==player_x & pos_y==player_y)
+          {R, G, B} <= RED;
+        else
+          {R, G, B} <= pos_y+pos_x;
       end
     end
   end
@@ -172,5 +175,36 @@ localparam [7:0] RIGHT_GLYPH[0:7] = '{
       8'b00001000,
       8'b00000000
   };
+
+  wire [3:0] pos_x = pix_x/40;
+  wire [3:0] pos_y = pix_y/40;
+
+  reg [3:0] player_x=0;
+  reg [3:0] player_y=0;
+
+  
+  always @(posedge clk) begin
+    if (inp_up) begin
+      player_y <= player_y+1;
+    end
+    if (inp_down) begin
+      player_y <= player_y-11;
+    end
+    if (inp_left) begin
+      player_x <= player_x-1;
+    end
+    if (inp_right) begin
+      player_x <= player_x+1;
+    end
+
+  end
+/*
+    always @(posedge clk) begin
+      if (inp_up)
+        pos_x=pos_x+1;
+      if (inp_down)
+        pos_x=pos_x-1;
+  end
+*/
   
 endmodule
