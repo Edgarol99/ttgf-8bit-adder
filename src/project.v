@@ -16,8 +16,49 @@ module tt_um_example (
     input  wire       rst_n     // reset_n - low to reset
 );
 
+  // VGA signals
+  wire hsync;
+  wire vsync;
+  reg [1:0] R;
+  reg [1:0] G;
+  reg [1:0] B;
+  wire video_active;
+  wire [9:0] pix_x;
+  wire [9:0] pix_y;
+
+  // Tiny VGA Pmod
+  assign uo_out = {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
+
+  hvsync_generator vga_sync_gen (
+      .clk(clk),
+      .reset(~rst_n),
+      .hsync(hsync),
+      .vsync(vsync),
+      .display_on(video_active),
+      .hpos(pix_x),
+      .vpos(pix_y)
+  );
+
+  // Colors
+  localparam [5:0] BLACK = {2'b00, 2'b00, 2'b00};
+  localparam [5:0] GRIS1 = {2'b01, 2'b01, 2'b01};
+  localparam [5:0] GRIS2 = {2'b10, 2'b10, 2'b10};
+  localparam [5:0] RED = {2'b11, 2'b00, 2'b00};
+
+  // RGB output logic
+  always @(posedge clk) begin
+    if (~rst_n) begin
+      R <= 0;
+      G <= 0;
+      B <= 0;
+    end else begin
+      if (video_active) begin
+        {R, G, B} <= BLACK;
+      end
+    end
+  end
+
   // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
   assign uio_out = 0;
   assign uio_oe  = 0;
 
