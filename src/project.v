@@ -53,16 +53,124 @@ module tt_um_example (
       B <= 0;
     end else begin
       if (video_active) begin
-        {R, G, B} <= BLACK;
+        {R, G, B} <= inp_b;
       end
     end
   end
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+    // Gamepad Pmod
+  wire inp_b, inp_y, inp_select, inp_start, inp_up, inp_down, inp_left, inp_right, inp_a, inp_x, inp_l, inp_r;
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  gamepad_pmod_single u2 (
+      // Inputs:
+      .rst_n(rst_n),
+      .clk(clk),
+      .pmod_data(ui_in[6]),
+      .pmod_clk(ui_in[5]),
+      .pmod_latch(ui_in[4]),
+      // Outputs:
+      .b(inp_b),
+      .y(inp_y),
+      .select(inp_select),
+      .start(inp_start),
+      .up(inp_up),
+      .down(inp_down),
+      .left(inp_left),
+      .right(inp_right),
+      .a(inp_a),
+      .x(inp_x),
+      .l(inp_l),
+      .r(inp_r)
+  );
 
+  //Bandera
+  localparam [7:0] LEFT_GLYPH[0:7] = '{
+      8'b00001000,
+      8'b00011000,
+      8'b00111000,
+      8'b00011000,
+      8'b00001000,
+      8'b00001000,
+      8'b00001000,
+      8'b00111100
+  };
+
+//Uno
+localparam [7:0] DOWN_GLYPH[0:7] = '{
+      8'b00010000,
+      8'b00110000,
+      8'b00010000,
+      8'b00010000,
+      8'b00010000,
+      8'b00010000,
+      8'b00111000,
+      8'b00000000
+};
+//Dos
+localparam [7:0] UP_GLYPH[0:7] = '{
+      8'b00011000,
+      8'b00100100,
+      8'b00000100,
+      8'b00001000,
+      8'b00010000,
+      8'b00100000,
+      8'b00111100,
+      8'b00000000
+};
+//Tres
+localparam [7:0] RIGHT_GLYPH[0:7] = '{
+      8'b00011000,
+      8'b00000100,
+      8'b00000100,
+      8'b00011000,
+      8'b00000100,
+      8'b00000100,
+      8'b00011000,
+      8'b00000000
+};
+//cuatro
+  localparam [7:0] B_GLYPH[0:7] = '{
+      8'b00100100,
+      8'b00100100,
+      8'b00100100,
+      8'b00111110,
+      8'b00000100,
+      8'b00000100,
+      8'b00000100,
+      8'b00000000
+  };
+  //cinco
+  localparam [7:0] X_GLYPH[0:7] = '{
+      8'b00000000,
+      8'b01111100,
+      8'b01000000,
+      8'b01111000,
+      8'b00000100,
+      8'b01000100,
+      8'b00111000,
+      8'b00000000
+  };
+  //seis
+  localparam [7:0] Y_GLYPH[0:7] = '{
+      8'b00000000,
+      8'b00011100,
+      8'b00100000,
+      8'b00100000,
+      8'b00111100,
+      8'b00100010,
+      8'b00100010,
+      8'b00011100
+  };
+//mina
+  localparam [7:0] A_GLYPH[0:7] = '{
+      8'b00001000,
+      8'b00011100,
+      8'b00101110,
+      8'b01100111,
+      8'b00111110,
+      8'b00011100,
+      8'b00001000,
+      8'b00000000
+  };
+  
 endmodule
